@@ -1,9 +1,10 @@
 using CarManagement.Data;
+using CarManagement.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<VehicleRepository>();
+builder.Services.AddScoped<DriversRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

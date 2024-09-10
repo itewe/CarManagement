@@ -21,6 +21,7 @@ namespace CarManagement.Models
 
         // Navigation properties
         public List<VehicleDriverHistory> VehicleDriverHistories { get; set; } = new List<VehicleDriverHistory>();
+
         public List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
     }
 }
