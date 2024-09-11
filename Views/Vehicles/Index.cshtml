@@ -13,16 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.PlateNumber)
+                PlateNumber
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfSeats)
+                NumberOfSeats
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Color)
+                Color
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
+                Type
             </th>
             <th>Actions</th>
         </tr>
@@ -47,6 +47,8 @@
                 <td>
                     <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.VehicleId">Edit</a> |
                     <a asp-action="Details" class="btn btn-success" asp-route-id="@item.VehicleId">Details</a> |
+                    <a asp-controller="Maintenances" asp-action="MaintenancebyVehicle" class="btn btn-success" asp-route-id="@item.VehicleId">Maintanance history</a> |
+
                     <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.VehicleId">Delete</a>
                 </td>
             </tr>

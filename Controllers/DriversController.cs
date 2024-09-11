@@ -56,9 +56,9 @@ namespace CarManagement.Controllers
             return View(driver);
         }
 
-        // GET: Drivers/Edit/5
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int id)
         {
+
             if (id == null)
             {
                 return NotFound();
@@ -69,8 +69,10 @@ namespace CarManagement.Controllers
             {
                 return NotFound();
             }
+
             return View(driver);
         }
+
 
         // POST: Drivers/Edit/5
         [HttpPost]

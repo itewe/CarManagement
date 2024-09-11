@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CarManagement.Models
 {
@@ -10,20 +10,14 @@ namespace CarManagement.Models
         [Required]
         public int VehicleId { get; set; }
 
-        [ForeignKey("VehicleId")]
-        required
-
-        public Vehicle Vehicle
-        { get; set; }
+        [ForeignKey(nameof(VehicleId))]
+        public Vehicle? Vehicle { get; set; } // Navigation property
 
         [Required]
         public int DriverId { get; set; }
 
-        [ForeignKey("DriverId")]
-        required
-
-        public Driver Driver
-        { get; set; }
+        [ForeignKey(nameof(DriverId))] // foreignKey fro the Driver navigation 
+        public Driver? Driver { get; set; } // Navigation property
 
         [Required]
         public DateTime AssignmentDate { get; set; }

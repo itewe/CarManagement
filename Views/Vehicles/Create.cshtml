@@ -9,9 +9,18 @@
 <h4>Vehicle</h4>
 <hr />
 <div class="row">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
             <div class="form-group">
                 <label asp-for="PlateNumber" class="control-label"></label>
                 <input asp-for="PlateNumber" class="form-control" />
@@ -36,14 +45,13 @@
 
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-success" />
-                 <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                <a asp-action="Index" class="btn btn-primary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-
 </div>
 
 @section Scripts {

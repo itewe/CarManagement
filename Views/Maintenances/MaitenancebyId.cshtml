@@ -1,0 +1,60 @@
+﻿@model IEnumerable<CarManagement.Models.Maintenance>
+
+@{
+    ViewData["Title"] = "Maintenances";
+}
+
+<h1>Maintenances </h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Description
+            </th>
+            <th>
+                DateOfMaintenance
+            </th>
+            <th>
+                Cost
+            </th>
+            <th>
+                Vehicle Plate Number
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @(item.Description.Length > 10
+                        ? item.Description.Substring(0, 10) + "..."
+                        : item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfMaintenance)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle.PlateNumber)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.MaintenanceId" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.MaintenanceId" class="btn btn-success">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaintenanceId" class="btn btn-danger">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn btn-primary" asp-controller="Vehicles" asp-action="Index">Back to List</a>
+

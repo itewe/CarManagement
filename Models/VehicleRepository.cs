@@ -1,4 +1,5 @@
 ﻿using CarManagement.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarManagement.Models
 {
@@ -37,28 +38,49 @@ namespace CarManagement.Models
         // Create a new Vehicle
         public void Create(Vehicle vehicle)
         {
-            _context.Vehicles.Add(vehicle);
-            _context.SaveChanges();
+            try
+            {
+                _context.Vehicles.Add(vehicle);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Log the error (ex) and handle it appropriately
+                if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    throw new Exception("A vehicle with the same Plate Number already exists.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         // Edit an existing Vehicle
         public void Edit(int id, Vehicle vehicle)
         {
-            if (vehicle == null)
+            try
             {
-                throw new ArgumentNullException(nameof(vehicle));
+                var existingVehicle = _context.Vehicles.Find(id);
+                if (existingVehicle != null)
+                {
+                    _context.Entry(existingVehicle).CurrentValues.SetValues(vehicle);
+                    _context.SaveChanges();
+                }
             }
-            if (id != vehicle.VehicleId) return;
-
-            // Check if the Vehicle exists
-            var existingVehicle = _context.Vehicles.Find(vehicle.VehicleId);
-            if (existingVehicle == null)
+            catch (DbUpdateException ex)
             {
-                throw new KeyNotFoundException($"Vehicle with ID {vehicle.VehicleId} not found.");
+                // Handle duplicate PlateNumber during edit
+                if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    throw new Exception("A vehicle with the same Plate Number already exists.");
+                }
+                else
+                {
+                    throw;
+                }
             }
-
-            _context.Entry(existingVehicle).CurrentValues.SetValues(vehicle);
-            _context.SaveChanges();
         }
 
         // Delete a Vehicle

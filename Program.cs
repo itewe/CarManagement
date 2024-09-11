@@ -1,10 +1,12 @@
 using CarManagement.Data;
 using CarManagement.Models;
+using CarManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<VehicleRepository>();
 builder.Services.AddScoped<DriversRepository>();
+builder.Services.AddScoped<MaintenanceRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -16,7 +18,7 @@ builder.Services.AddDbContext<CarManagementContext>(options =>
     //package manager terminal manage migration: Add-migration Init
     //Update-Database Init
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-}); ;
+});
 var app = builder.Build();
 //check if connection succ
 //using (MySqlConnection conn = new MySqlConnection(connectionString))

@@ -50,8 +50,16 @@ namespace CarManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                vehicleRepository.Create(vehicle);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    vehicleRepository.Create(vehicle);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Show the error message to the user
+                    ModelState.AddModelError(string.Empty, "A vehicle with the same Plate Number already exists.");
+                }
             }
             return View(vehicle);
         }
@@ -84,8 +92,16 @@ namespace CarManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                vehicleRepository.Edit(id, vehicle);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    vehicleRepository.Edit(id, vehicle);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Show the error message to the user
+                    ModelState.AddModelError(string.Empty, "A vehicle with the same Plate Number already exists.");
+                }
             }
             return View(vehicle);
         }

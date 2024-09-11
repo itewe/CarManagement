@@ -16,7 +16,7 @@ namespace CarManagement.Models
         [StringLength(20)]
         public string? PhoneNumber { get; set; }
 
-        // Navigation properties
+        // Navigation properties one to many
         public List<VehicleDriverHistory> VehicleDriverHistories { get; set; } = new List<VehicleDriverHistory>();
     }
 }

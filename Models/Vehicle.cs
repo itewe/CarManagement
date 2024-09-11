@@ -19,7 +19,7 @@ namespace CarManagement.Models
         [StringLength(50)]
         public string? Type { get; set; }
 
-        // Navigation properties
+        // Navigation properties one-to-many
         public List<VehicleDriverHistory> VehicleDriverHistories { get; set; } = new List<VehicleDriverHistory>();
 
         public List<Maintenance> Maintenances { get; set; } = new List<Maintenance>();
