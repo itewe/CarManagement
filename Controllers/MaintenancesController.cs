@@ -1,5 +1,6 @@
 ﻿using CarManagement.Models;
 using CarManagement.Repositories;
+using CarManagement.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
@@ -32,7 +33,13 @@ namespace CarManagement.Controllers
 
             }
             var maintenances = _maintenanceRepository.GetAllMaintenancesByVehicleId(id);
-            return View("MaitenancebyId", maintenances);
+            var viewModel = new MaintenancesViewModel
+            {
+                VehicleId = id,
+                maintenances = maintenances
+            };
+            return View("MaitenancebyId", viewModel);
+
         }
 
         // GET: Maintenances/Details/5
@@ -52,33 +59,43 @@ namespace CarManagement.Controllers
             return View(maintenance);
         }
 
-        // GET: Maintenances/Create
-        public IActionResult Create()
+        // GET: Maintenances/Create/1
+        public IActionResult Create(int id)
         {
-            var vehicles = _vehicleRepository.GetallVehicles();
-            if (vehicles == null)
+            ViewBag.Vehicles = new SelectList(_vehicleRepository.GetallVehicles(), "VehicleId", "PlateNumber");
+            var model = new MaintenancesViewModel
             {
-                return View("Error"); // Handle errors appropriately
-            }
-
-            ViewData["VehicleId"] = new SelectList(vehicles, "VehicleId", "PlateNumber");
-            return View();
+                VehicleId = id,
+                maintenance = new Maintenance(),
+                maintenances = new List<Maintenance>()
+            };
+            return View(model);
         }
 
-        // POST: Maintenances/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Maintenance maintenance)
+        public IActionResult Create(MaintenancesViewModel model)
         {
             if (ModelState.IsValid)
             {
+                var maintenance = new Maintenance
+                {
+                    Description = model.maintenance.Description,
+                    DateOfMaintenance = model.maintenance.DateOfMaintenance,
+                    Cost = model.maintenance.Cost,
+                    VehicleId = model.VehicleId
+                };
+
                 _maintenanceRepository.CreateMaintenance(maintenance);
+
                 return RedirectToAction(nameof(MaintenancebyVehicle), new { id = maintenance.VehicleId });
             }
-            // Repopulate the dropdown in case of errors
-            ViewData["VehicleId"] = new SelectList(_vehicleRepository.GetallVehicles(), "VehicleId", "PlateNumber", maintenance.VehicleId);
-            return View(maintenance); // Return to the Create view with current model state
+
+            return View(model);
         }
+
+
+
 
         // GET: Maintenances/Edit/5
         public IActionResult Edit(int? id)

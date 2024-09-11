@@ -1,35 +1,27 @@
-﻿@model IEnumerable<CarManagement.Models.Maintenance>
+﻿@model CarManagement.ViewModels.MaintenancesViewModel
 
 @{
     ViewData["Title"] = "Maintenances";
 }
 
-<h1>Maintenances </h1>
+<h1>Maintenances</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="Create" asp-route-id="@Model.VehicleId" class="btn btn-primary">Create New</a>
 </p>
 
 <table class="table">
     <thead>
         <tr>
-            <th>
-                Description
-            </th>
-            <th>
-                DateOfMaintenance
-            </th>
-            <th>
-                Cost
-            </th>
-            <th>
-                Vehicle Plate Number
-            </th>
+            <th>Description</th>
+            <th>Date Of Maintenance</th>
+            <th>Cost</th>
+            <th>Vehicle Plate Number</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.maintenances)
         {
             <tr>
                 <td>
@@ -50,11 +42,10 @@
                     <a asp-action="Edit" asp-route-id="@item.MaintenanceId" class="btn btn-primary">Edit</a>
                     <a asp-action="Details" asp-route-id="@item.MaintenanceId" class="btn btn-success">Details</a>
                     <a asp-action="Delete" asp-route-id="@item.MaintenanceId" class="btn btn-danger">Delete</a>
-
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<a class="btn btn-primary" asp-controller="Vehicles" asp-action="Index">Back to List</a>
 
+<a asp-action="Index" asp-controller="Vehicles" class="btn btn-primary">Back to List</a>

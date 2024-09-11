@@ -1,4 +1,4 @@
-﻿@model CarManagement.Models.Maintenance
+﻿@model CarManagement.ViewModels.MaintenancesViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,34 +10,37 @@
     <div class="col-md-4">
         <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="VehicleId" type="hidden" />
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
+
+                <label asp-for="maintenance.VehicleId" class="control-label"></label>
+                <input asp-for="maintenance.VehicleId" type="hidden" value="@Model.VehicleId" />
             </div>
             <div class="form-group">
-                <label asp-for="DateOfMaintenance" class="control-label"></label>
-                <input asp-for="DateOfMaintenance" class="form-control"
-                       type="datetime-local"
+                <label asp-for="maintenance.Description" class="control-label"></label>
+                <input asp-for="maintenance.Description" class="form-control" />
+                <span asp-validation-for="maintenance.Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="maintenance.DateOfMaintenance" class="control-label"></label>
+                <input asp-for="maintenance.DateOfMaintenance" class="form-control" type="datetime-local"
                        max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
                        min="1945-01-01T00:00"
                        value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
-                <span asp-validation-for="DateOfMaintenance" class="text-danger"></span>
+                <span asp-validation-for="maintenance.DateOfMaintenance" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" />
-                <span asp-validation-for="Cost" class="text-danger"></span>
+                <label asp-for="maintenance.Cost" class="control-label"></label>
+                <input asp-for="maintenance.Cost" class="form-control" />
+                <span asp-validation-for="maintenance.Cost" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="VehicleId" class="control-label">Vehicle Plate number</label>
-                <select asp-for="VehicleId" class="form-control" asp-items="ViewBag.VehicleId"></select>
-            </div>
+
             <br />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
-                <a class="btn btn-primary" asp-controller="Vehicles" asp-action="Index">Back to List</a>
-
+                <a asp-controller="Maintenances" asp-action="MaintenancebyVehicle" class="btn btn-success" asp-route-id="@Model.VehicleId">Back To List</a>
             </div>
         </form>
     </div>
