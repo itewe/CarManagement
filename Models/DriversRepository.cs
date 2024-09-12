@@ -1,4 +1,5 @@
 ﻿using CarManagement.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarManagement.Models
 {
@@ -31,32 +32,64 @@ namespace CarManagement.Models
         // Create a new Driver
         public void Create(Driver driver)
         {
-            if (driver == null)
+            try
             {
-                throw new ArgumentNullException(nameof(driver));
+                if (driver == null)
+                {
+                    throw new ArgumentNullException(nameof(driver));
+                }
+
+                _context.Drivers.Add(driver);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
+            {
+                // Handle duplicate PlateNumber during edit
+                if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    throw new Exception("A Driver with the same Licence Number already exists.");
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            _context.Drivers.Add(driver);
-            _context.SaveChanges();
         }
 
         // Edit an existing Driver
         public void Edit(int id, Driver driver)
         {
-            if (driver == null)
+            try
             {
-                throw new ArgumentNullException(nameof(driver));
-            }
-            if (id != driver.DriverId) return;
+                if (driver == null)
+                {
+                    throw new ArgumentNullException(nameof(driver));
+                }
+                if (id != driver.DriverId) return;
 
-            var existingDriver = _context.Drivers.Find(driver.DriverId);
-            if (existingDriver == null)
+                var existingDriver = _context.Drivers.Find(driver.DriverId);
+                if (existingDriver == null)
+                {
+                    throw new KeyNotFoundException($"Driver with ID {driver.DriverId} not found.");
+                }
+
+                _context.Entry(existingDriver).CurrentValues.SetValues(driver);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException ex)
             {
-                throw new KeyNotFoundException($"Driver with ID {driver.DriverId} not found.");
+                // Handle duplicate PlateNumber during edit
+                if (ex.InnerException?.Message.Contains("UNIQUE") == true)
+                {
+                    throw new Exception("A Driver with the same Licence Number already exists.");
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            _context.Entry(existingDriver).CurrentValues.SetValues(driver);
-            _context.SaveChanges();
         }
 
         // Delete a Driver

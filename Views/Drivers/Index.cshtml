@@ -9,18 +9,13 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<table class="table">
+
+<table id="driversTable" class="table">
     <thead>
         <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                LicenseNumber
-            </th>
-            <th>
-                PhoneNumber
-            </th>
+            <th>Name</th>
+            <th>License Number</th>
+            <th>Phone Number</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -28,15 +23,9 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LicenseNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.LicenseNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                 <td>
                     <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.DriverId">Edit</a> |
                     <a asp-action="Details" class="btn btn-success" asp-route-id="@item.DriverId">Details</a> |
@@ -46,3 +35,11 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#driversTable').DataTable();
+        });
+    </script>
+}

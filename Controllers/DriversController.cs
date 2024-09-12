@@ -50,8 +50,16 @@ namespace CarManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repository.Create(driver);
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _repository.Create(driver);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // Show the error message to the user
+                    ModelState.AddModelError(string.Empty, "A Driver with the same Licence Number already exists.");
+                }
             }
             return View(driver);
         }
@@ -71,6 +79,7 @@ namespace CarManagement.Controllers
             }
 
             return View(driver);
+
         }
 
 
@@ -83,18 +92,18 @@ namespace CarManagement.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
                     _repository.Edit(id, driver);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (KeyNotFoundException)
+                catch (Exception ex)
                 {
-                    return NotFound();
+                    // Show the error message to the user
+                    ModelState.AddModelError(string.Empty, "A Driver with the same Licence Number already exists.");
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(driver);
         }

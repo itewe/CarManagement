@@ -10,7 +10,7 @@
     <a asp-action="Create" asp-route-id="@Model.VehicleId" class="btn btn-primary">Create New</a>
 </p>
 
-<table class="table">
+<table id="maintenancesTable" class="table">
     <thead>
         <tr>
             <th>Description</th>
@@ -49,3 +49,11 @@
 </table>
 
 <a asp-action="Index" asp-controller="Vehicles" class="btn btn-primary">Back to List</a>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#maintenancesTable').DataTable();
+        });
+    </script>
+}

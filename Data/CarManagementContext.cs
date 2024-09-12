@@ -23,6 +23,9 @@ namespace CarManagement.Data
             modelBuilder.Entity<Vehicle>()
                 .HasIndex(v => v.PlateNumber)
                 .IsUnique();
+            modelBuilder.Entity<Driver>()
+            .HasIndex(d => d.LicenseNumber)
+            .IsUnique();
         }
     }
 }
