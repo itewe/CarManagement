@@ -1,0 +1,79 @@
+﻿@model IEnumerable<CarManagement.Models.VehicleDriverHistory>
+
+@{
+    ViewData["Title"] = "Previous Drivers";
+}
+
+<h1>Drivers History for Vehicle : @ViewData["Vehiclepltnb"]</h1>
+<br />
+<a asp-action="EditDriver" asp-controller="vehicles" asp-route-id="@ViewData["VehicleId"]" class="btn btn-primary">Edit Current Driver</a>
+<br />
+<br />
+<table class="table" id="historyTable">
+    <thead>
+        <tr>
+            <th>
+                Vehicle Plate Nb
+            </th>
+            <th>
+                Driver License Nb
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                AssignmentDate
+            </th>
+            <th>
+                EndDate
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle.PlateNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Driver.LicenseNumber)
+                </td>
+                <td>
+                    @(item.Description.Length > 10
+                        ? item.Description.Substring(0, 10) + "..."
+                        : item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignmentDate)
+                </td>
+                <td>
+                    @if (item.EndDate == null)
+                    {
+                        <span>Present</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.EndDate)
+
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.VehicleDriverHistoryId">Edit</a> |
+                    <a asp-action="Details" class="btn btn-success" asp-route-id="@item.VehicleDriverHistoryId">Details</a> |
+                    <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.VehicleDriverHistoryId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Details" asp-controller="Vehicles" class="btn btn-primary" asp-route-id="@ViewData["VehicleId"]">Back to Details</a>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#historyTable').DataTable();
+        });
+    </script>
+}

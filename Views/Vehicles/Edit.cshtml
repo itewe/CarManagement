@@ -44,8 +44,11 @@
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-success" />
-                <a asp-action="Index" class="btn btn-primary">Back to List</a>
+                <input type="submit" value="Save" class="btn btn-success" />|
+                <a asp-action="Index" class="btn btn-primary">Back to List</a>|
+                <a asp-action="EditDriver" asp-route-id="@Model.VehicleId" class="btn btn-primary">Edit Current Driver</a>
+
+
             </div>
         </form>
     </div>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarManagement.Migrations
 {
     [DbContext(typeof(CarManagementContext))]
-    [Migration("20240910180522_Initial")]
-    partial class Initial
+    [Migration("20240912140956_UpdateVehicleDriverHistoryRelationshipA")]
+    partial class UpdateVehicleDriverHistoryRelationshipA
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,6 +47,9 @@ namespace CarManagement.Migrations
                         .HasColumnType("varchar(20)");
 
                     b.HasKey("DriverId");
+
+                    b.HasIndex("LicenseNumber")
+                        .IsUnique();
 
                     b.ToTable("Drivers");
                 });
@@ -92,6 +95,9 @@ namespace CarManagement.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("varchar(50)");
 
+                    b.Property<int?>("CurrentDriverId")
+                        .HasColumnType("int");
+
                     b.Property<int>("NumberOfSeats")
                         .HasColumnType("int");
 
@@ -105,6 +111,8 @@ namespace CarManagement.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("VehicleId");
+
+                    b.HasIndex("CurrentDriverId");
 
                     b.HasIndex("PlateNumber")
                         .IsUnique();
@@ -152,6 +160,16 @@ namespace CarManagement.Migrations
                     b.Navigation("Vehicle");
                 });
 
+            modelBuilder.Entity("CarManagement.Models.Vehicle", b =>
+                {
+                    b.HasOne("CarManagement.Models.Driver", "CurrentDriver")
+                        .WithMany("CurrentVehicles")
+                        .HasForeignKey("CurrentDriverId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CurrentDriver");
+                });
+
             modelBuilder.Entity("CarManagement.Models.VehicleDriverHistory", b =>
                 {
                     b.HasOne("CarManagement.Models.Driver", "Driver")
@@ -173,6 +191,8 @@ namespace CarManagement.Migrations
 
             modelBuilder.Entity("CarManagement.Models.Driver", b =>
                 {
+                    b.Navigation("CurrentVehicles");
+
                     b.Navigation("VehicleDriverHistories");
                 });
 

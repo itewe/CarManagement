@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CarManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class AddCarManagementSchema : Migration
+    public partial class UpdateVehicleDriverHistoryRelationshipA : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,11 +46,18 @@ namespace CarManagement.Migrations
                     Color = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Type = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CurrentDriverId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.VehicleId);
+                    table.ForeignKey(
+                        name: "FK_Vehicles_Drivers_CurrentDriverId",
+                        column: x => x.CurrentDriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "DriverId",
+                        onDelete: ReferentialAction.SetNull);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -108,6 +115,12 @@ namespace CarManagement.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Drivers_LicenseNumber",
+                table: "Drivers",
+                column: "LicenseNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Maintenances_VehicleId",
                 table: "Maintenances",
                 column: "VehicleId");
@@ -121,6 +134,17 @@ namespace CarManagement.Migrations
                 name: "IX_VehicleDriverHistories_VehicleId",
                 table: "VehicleDriverHistories",
                 column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_CurrentDriverId",
+                table: "Vehicles",
+                column: "CurrentDriverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vehicles_PlateNumber",
+                table: "Vehicles",
+                column: "PlateNumber",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -133,10 +157,10 @@ namespace CarManagement.Migrations
                 name: "VehicleDriverHistories");
 
             migrationBuilder.DropTable(
-                name: "Drivers");
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
-                name: "Vehicles");
+                name: "Drivers");
         }
     }
 }

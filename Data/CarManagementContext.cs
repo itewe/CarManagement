@@ -23,9 +23,19 @@ namespace CarManagement.Data
             modelBuilder.Entity<Vehicle>()
                 .HasIndex(v => v.PlateNumber)
                 .IsUnique();
+
+            // Ensure that LicenseNumber is unique
             modelBuilder.Entity<Driver>()
-            .HasIndex(d => d.LicenseNumber)
-            .IsUnique();
+                .HasIndex(d => d.LicenseNumber)
+                .IsUnique();
+
+            // Configure one-to-many relationship between Vehicle and Driver
+            modelBuilder.Entity<Vehicle>()
+                .HasOne(v => v.CurrentDriver)
+                .WithMany(d => d.CurrentVehicles)
+                .HasForeignKey(v => v.CurrentDriverId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
+
     }
 }

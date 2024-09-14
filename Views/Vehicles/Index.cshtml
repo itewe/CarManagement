@@ -15,6 +15,7 @@
         <tr>
             <th>Plate Number</th>
             <th>Number Of Seats</th>
+            <th>Current Driver Licence NB</th>
             <th>Color</th>
             <th>Type</th>
             <th>Actions</th>
@@ -26,12 +27,23 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.PlateNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.NumberOfSeats)</td>
+                <td>
+                    @if (item.CurrentDriverId == null)
+                    {
+                        <span>No current</span>
+                    }
+                    else
+                    {
+                        <a asp-action="Details" asp-controller="Drivers" class="btn btn-link" asp-route-id="@item.CurrentDriverId">@Html.DisplayFor(modelItem => item.CurrentDriver.LicenseNumber)</a>
+
+                    }
+                </td>
                 <td>@Html.DisplayFor(modelItem => item.Color)</td>
                 <td>@Html.DisplayFor(modelItem => item.Type)</td>
                 <td>
                     <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.VehicleId">Edit</a> |
                     <a asp-action="Details" class="btn btn-success" asp-route-id="@item.VehicleId">Details</a> |
-                    <a asp-controller="Maintenances" asp-action="MaintenancebyVehicle" class="btn btn-success" asp-route-id="@item.VehicleId">Maintenance History</a> |
+                    <a asp-controller="Maintenances" asp-action="MaintenancebyVehicle" class="btn btn-success" asp-route-id="@item.VehicleId">Maintenance</a> |
                     <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.VehicleId">Delete</a>
                 </td>
             </tr>

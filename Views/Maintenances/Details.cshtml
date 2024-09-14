@@ -38,6 +38,7 @@
     </dl>
 </div>
 <div>
+    <a asp-action="Edit" asp-route-id="@Model.MaintenanceId" class="btn btn-primary">Edit</a>
     <a asp-action="Details" asp-controller="Vehicles" class="btn btn-success" asp-route-id="@Model.Vehicle.VehicleId">Take me to the car Details</a>
     <a asp-controller="Maintenances" asp-action="MaintenancebyVehicle" class="btn btn-primary" asp-route-id="@Model.Vehicle.VehicleId">Back to List</a>
 </div>

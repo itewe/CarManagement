@@ -19,11 +19,11 @@ namespace CarManagement.Controllers
         }
 
         // GET: Maintenances
-        //public IActionResult Index()
-        //{
-        //    var maintenances = _maintenanceRepository.GetAllMaintenances();
-        //    return View(maintenances);
-        //}
+        public IActionResult Index()
+        {
+            var maintenances = _maintenanceRepository.GetAllMaintenances();
+            return View(maintenances);
+        }
         public IActionResult MaintenancebyVehicle(int id)
         {
             var vehicle = _vehicleRepository.Details(id);
@@ -38,6 +38,7 @@ namespace CarManagement.Controllers
                 VehicleId = id,
                 maintenances = maintenances
             };
+            ViewData["Vehiclepltnb"] = vehicle.PlateNumber;
             return View("MaitenancebyId", viewModel);
 
         }
@@ -62,6 +63,11 @@ namespace CarManagement.Controllers
         // GET: Maintenances/Create/1
         public IActionResult Create(int id)
         {
+            var vehicle = _vehicleRepository.Details(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
             ViewBag.Vehicles = new SelectList(_vehicleRepository.GetallVehicles(), "VehicleId", "PlateNumber");
             var model = new MaintenancesViewModel
             {
@@ -78,6 +84,11 @@ namespace CarManagement.Controllers
         {
             if (ModelState.IsValid)
             {
+                var vehicle = _vehicleRepository.Details(model.VehicleId);
+                if (vehicle == null)
+                {
+                    return NotFound();
+                }
                 var maintenance = new Maintenance
                 {
                     Description = model.maintenance.Description,

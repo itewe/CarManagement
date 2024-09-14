@@ -7,9 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<VehicleRepository>();
 builder.Services.AddScoped<DriversRepository>();
 builder.Services.AddScoped<MaintenanceRepository>();
+builder.Services.AddScoped<VehicleDriverHistoryRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
 
 var connectionString = builder.Configuration.GetConnectionString("MySqlConn");
 builder.Services.AddDbContext<CarManagementContext>(options =>
@@ -34,6 +37,10 @@ var app = builder.Build();
 //    }
 //}
 // Configure the HTTP request pipeline.
+
+
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

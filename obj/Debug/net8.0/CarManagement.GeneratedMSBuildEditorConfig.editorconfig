@@ -70,6 +70,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Maintenances/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Maintenances/MaitenancebyId.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VzXE1haXRlbmFuY2VieUlkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -80,6 +84,30 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/DriverHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xEcml2ZXJIaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/VehicleDriverHistories/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZURyaXZlckhpc3Rvcmllc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Vehicles/Create.cshtml]
@@ -96,6 +124,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Vehicles/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Vehicles/EditDriver.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVoaWNsZXNcRWRpdERyaXZlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/icomd/source/repos/CarManagement/CarManagement/Views/Vehicles/Index.cshtml]

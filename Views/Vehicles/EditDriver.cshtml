@@ -1,0 +1,27 @@
+﻿@model EditDriverViewModel
+
+@{
+    ViewData["Title"] = "Edit Driver";
+}
+
+<h1>Edit Driver</h1>
+
+<form asp-action="EditDriver" method="post" id="editDriverForm">
+
+    <input type="hidden" asp-for="VehicleId" />
+
+    <div class="form-group">
+        <label asp-for="SelectedDriverId" class="control-label">Select Driver by License Number</label>
+        <select asp-for="SelectedDriverId" asp-items="Model.Drivers" class="form-control">
+            <option value="0">-- No Driver --</option> <!-- This will represent null -->
+        </select>
+        <span asp-validation-for="SelectedDriverId" class="text-danger"></span>
+    </div>
+
+    <br />
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.VehicleId">Return To Edit</a>
+    </div>
+</form>

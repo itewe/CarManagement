@@ -8,7 +8,6 @@ namespace CarManagement.Models
         public int MaintenanceId { get; set; }
 
         [Required]
-        [StringLength(100)]
         public string Description { get; set; } = "";
 
         [Required]

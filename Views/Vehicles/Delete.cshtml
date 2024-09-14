@@ -40,6 +40,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="VehicleId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        <a asp-controller="VehicleDriverHistories" asp-action="HistorybyvehicleId" class="btn btn-success" asp-route-id="@Model?.VehicleId">Back to List</a>
     </form>
 </div>

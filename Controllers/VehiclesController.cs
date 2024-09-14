@@ -1,16 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CarManagement.Data;
 using CarManagement.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CarManagement.Controllers
 {
     public class VehiclesController : Controller
     {
         private readonly VehicleRepository vehicleRepository;
+        private readonly DriversRepository driversRepository;
 
-        public VehiclesController(VehicleRepository vehicleRepository)
+
+        public VehiclesController(VehicleRepository vehicleRepository, DriversRepository driversRepository)
         {
             this.vehicleRepository = vehicleRepository;
+            this.driversRepository = driversRepository;
         }
 
         // GET: Vehicles
@@ -130,5 +134,52 @@ namespace CarManagement.Controllers
             vehicleRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
+
+        // GET: Vehicles/EditDriver/5
+        public IActionResult EditDriver(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var vehicle = vehicleRepository.Details(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+
+            var drivers = driversRepository.GetAllDrivers();
+
+            var viewModel = new EditDriverViewModel
+            {
+                VehicleId = vehicle.VehicleId,
+                SelectedDriverId = vehicle.CurrentDriverId.HasValue ? vehicle.CurrentDriverId.Value : 0,
+                Drivers = new SelectList(drivers, "DriverId", "LicenseNumber")
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditDriver(EditDriverViewModel model)
+        {
+            try
+            {
+                vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while updating the driver.");
+            }
+            var drivers = driversRepository.GetAllDrivers();
+            model.Drivers = new SelectList(drivers, "DriverId", "LicenseNumber");
+            return View(model);
+        }
+
+
+
     }
 }

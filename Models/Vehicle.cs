@@ -19,6 +19,9 @@ namespace CarManagement.Models
         [StringLength(50)]
         public string? Type { get; set; }
 
+        public int? CurrentDriverId { get; set; }
+        public Driver? CurrentDriver { get; set; }
+
         // Navigation properties one-to-many
         public List<VehicleDriverHistory> VehicleDriverHistories { get; set; } = new List<VehicleDriverHistory>();
 

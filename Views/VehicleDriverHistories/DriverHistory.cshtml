@@ -1,0 +1,70 @@
+﻿@model IEnumerable<CarManagement.Models.VehicleDriverHistory>
+
+@{
+    ViewData["Title"] = "Vehicles History for Driver";
+}
+
+<h1>Vehicles History for Driver : @ViewData["DriverLicenseNb"]</h1>
+<br />
+<a asp-action="Details" asp-controller="Drivers" asp-route-id="@ViewData["DriverId"]" class="btn btn-primary">Back to Driver Details</a>
+<br />
+<br />
+<table class="table" id="historyTable">
+    <thead>
+        <tr>
+            <th>
+                Vehicle Plate Nb
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                AssignmentDate
+            </th>
+            <th>
+                EndDate
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Vehicle.PlateNumber)
+                </td>
+                <td>
+                    @(item.Description.Length > 10
+                        ? item.Description.Substring(0, 10) + "..."
+                        : item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignmentDate)
+                </td>
+                <td>
+                    @if (item.EndDate == null)
+                    {
+                        <span>Present</span>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => item.EndDate)
+                    }
+                </td>
+                <td>
+                    <a asp-action="Details" class="btn btn-success" asp-route-id="@item.VehicleDriverHistoryId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Details" asp-controller="Drivers" asp-route-id="@ViewData["DriverId"]" class="btn btn-primary">Back to Driver Details</a>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#historyTable').DataTable();
+        });
+    </script>
+}

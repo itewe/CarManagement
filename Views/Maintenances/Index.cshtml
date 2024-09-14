@@ -1,14 +1,11 @@
-﻿@model CarManagement.ViewModels.MaintenancesViewModel
+﻿@model IEnumerable<CarManagement.Models.Maintenance>
 
 @{
     ViewData["Title"] = "Maintenances";
 }
 
-<h1>Maintenances for Vehicle: @ViewData["Vehiclepltnb"] </h1>
+<h1>All Maintenances</h1>
 
-<p>
-    <a asp-action="Create" asp-route-id="@Model.VehicleId" class="btn btn-primary">Create New</a>
-</p>
 
 <table id="maintenancesTable" class="table">
     <thead>
@@ -21,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.maintenances)
+        @foreach (var item in Model)
         {
             <tr>
                 <td>
@@ -53,21 +50,17 @@
             </td>
             <td style="text-align:right">
                 <b>
-                    @(string.Format("{0:c}", Model.maintenances.Sum(x => x.Cost)))
+                    @(string.Format("{0:c}", Model.Sum(x => x.Cost)))
                 </b>
             </td>
         </tr>
     </tfoot>
 </table>
 
-<a asp-action="Index" asp-controller="Vehicles" class="btn btn-primary">Back to List</a>
-
 @section Scripts {
     <script>
         $(document).ready(function () {
             $('#maintenancesTable').DataTable();
-
-
         });
     </script>
 }

@@ -7,7 +7,9 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Driver</h4>
+    <h4>
+        Driver : @Html.DisplayFor(model => model.Name)
+    </h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -30,7 +32,51 @@
         </dd>
     </dl>
 </div>
+<br />
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.DriverId" class="btn btn-success">Edit</a> |
-    <a asp-action="Index" class="btn btn-primary">Back to List</a>
+    <a asp-action="Index" class="btn btn-primary">Back to List</a> |
+    <a asp-controller="VehicleDriverHistories" asp-action="DriverHistory" asp-route-id="@Model?.DriverId" class="btn btn-primary">Vehicle History</a>
 </div>
+<br />
+@if (Model.CurrentVehicles != null && Model.CurrentVehicles.Any())
+{
+    <h4>Current Owned Vehicles</h4>
+    <table class="table" id="currentcars">
+        <thead>
+            <tr>
+                <th>PlateNumber</th>
+                <th>Color</th>
+                <th>Type</th>
+                <th>NumberOfSeats</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in Model.CurrentVehicles)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(m => vehicle.PlateNumber)</td>
+                    <td>@Html.DisplayFor(m => vehicle.Color)</td>
+                    <td>@Html.DisplayFor(m => vehicle.Type)</td>
+                    <td>@Html.DisplayFor(m => vehicle.NumberOfSeats)</td>
+                    <td>
+                        <a asp-action="Details" class="btn btn-success" asp-controller="Vehicles" asp-route-id="@vehicle.VehicleId">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No current cars owned by this driver.</p>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#currentcars').DataTable();
+        });
+    </script>
+}

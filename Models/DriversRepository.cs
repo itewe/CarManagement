@@ -25,8 +25,11 @@ namespace CarManagement.Models
             {
                 return null;
             }
-
-            return _context.Drivers.Find(id);
+            var driver = _context.Drivers.Find(id);
+            driver.CurrentVehicles = _context.Vehicles
+                .Where(v => v.CurrentDriverId == id)
+                .ToList(); ;
+            return driver;
         }
 
         // Create a new Driver
@@ -103,6 +106,34 @@ namespace CarManagement.Models
 
             _context.Drivers.Remove(driver);
             _context.SaveChanges();
+        }
+        public IEnumerable<Vehicle> GetAllCurrentVehicles()
+        {
+            return _context.Vehicles
+                .Where(v => v.CurrentDriverId != null)
+                .ToList();
+        }
+
+        public IEnumerable<Vehicle> GetCurrentVehiclesByDriverId(int driverId)
+        {
+            return _context.Vehicles
+                .Where(v => v.CurrentDriverId == driverId)
+                .ToList();
+        }
+        public Driver GetDriverByLicenseNumber(string licenseNumber)
+        {
+            if (string.IsNullOrEmpty(licenseNumber))
+            {
+                throw new ArgumentException("License number must be provided.", nameof(licenseNumber));
+            }
+
+            var driver = _context.Drivers.FirstOrDefault(d => d.LicenseNumber == licenseNumber);
+
+            if (driver == null)
+            {
+                throw new KeyNotFoundException($"Driver with license number {licenseNumber} not found.");
+            }
+            return driver;
         }
     }
 }

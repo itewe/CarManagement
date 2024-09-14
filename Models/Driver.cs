@@ -19,5 +19,7 @@ namespace CarManagement.Models
 
         // Navigation properties one to many
         public List<VehicleDriverHistory> VehicleDriverHistories { get; set; } = new List<VehicleDriverHistory>();
+        public List<Vehicle> CurrentVehicles { get; set; } = new List<Vehicle>();
+
     }
 }

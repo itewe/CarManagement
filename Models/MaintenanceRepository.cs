@@ -16,11 +16,11 @@ namespace CarManagement.Repositories
             _context = context;
         }
 
-        //// Get all maintenance records
-        //public IEnumerable<Maintenance> GetAllMaintenances()
-        //{
-        //    return _context.Maintenances.Include(m => m.Vehicle).ToList();
-        //}
+        //Get all maintenance records
+        public IEnumerable<Maintenance> GetAllMaintenances()
+        {
+            return _context.Maintenances.Include(m => m.Vehicle).ToList();
+        }
 
         public IEnumerable<Maintenance> GetAllMaintenancesByVehicleId(int id)
         {
