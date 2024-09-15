@@ -168,7 +168,8 @@ namespace CarManagement.Controllers
             try
             {
                 vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
-                return RedirectToAction(nameof(Index));
+                return Redirect($"/VehicleDriverHistories/HistorybyvehicleId/{model.VehicleId}");
+
             }
             catch (Exception ex)
             {

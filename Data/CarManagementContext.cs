@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CarManagement.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarManagement.Data
 {
-    public class CarManagementContext : DbContext
+    public class CarManagementContext : IdentityDbContext<ApplicationUser>
     {
         public CarManagementContext(DbContextOptions<CarManagementContext> options)
             : base(options)
@@ -35,6 +37,17 @@ namespace CarManagement.Data
                 .WithMany(d => d.CurrentVehicles)
                 .HasForeignKey(v => v.CurrentDriverId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            var adminRoleId = "admin-role-id";
+            var admin = new IdentityRole
+            {
+                Id = adminRoleId,
+                Name = "admin",
+                NormalizedName = "ADMIN"
+            };
+            modelBuilder.Entity<IdentityRole>().HasData(admin);
+
+
         }
 
     }
