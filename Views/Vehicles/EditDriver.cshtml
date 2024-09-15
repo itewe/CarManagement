@@ -13,7 +13,7 @@
     <div class="form-group">
         <label asp-for="SelectedDriverId" class="control-label">Select Driver by License Number</label>
         <select asp-for="SelectedDriverId" asp-items="Model.Drivers" class="form-control">
-            <option value="0">-- No Driver --</option> <!-- This will represent null -->
+            <option value="0">-- No Driver --</option>
         </select>
         <span asp-validation-for="SelectedDriverId" class="text-danger"></span>
     </div>
