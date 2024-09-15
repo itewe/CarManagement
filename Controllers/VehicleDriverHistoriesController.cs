@@ -15,10 +15,6 @@ namespace CarManagement.Controllers
         private readonly VehicleRepository vehicleRepository;
         private readonly DriversRepository driversRepository;
 
-
-
-
-
         public VehicleDriverHistoriesController(VehicleDriverHistoryRepository vehicleDriverHistoryRepository, VehicleRepository vehicleRepository, DriversRepository driversRepository)
         {
             this.vehicleRepository = vehicleRepository;
@@ -32,33 +28,35 @@ namespace CarManagement.Controllers
         //    var vehicleDriverHistories = vehicleDriverHistoryRepository.GetAllVehicleDriverHistories();
         //    return View(vehicleDriverHistories);
         //}
-        public IActionResult HistorybyvehicleId(int id)
+
+        public async Task<IActionResult> HistorybyvehicleId(int id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var vehicle = vehicleRepository.Details(id);
+
+            var vehicle = await vehicleRepository.Details(id);
             if (vehicle == null)
             {
                 return NotFound();
             }
+
             ViewData["VehicleId"] = id;
             ViewData["Vehiclepltnb"] = vehicle.PlateNumber;
-            var vehicleDriverHistories = vehicleDriverHistoryRepository.GetVehicleDriverHistoriesByVehicleId(id);
+            var vehicleDriverHistories = await vehicleDriverHistoryRepository.GetVehicleDriverHistoriesByVehicleId(id);
             return View("Index", vehicleDriverHistories);
         }
 
-
         // GET: VehicleDriverHistories/DriverHistory/5
-        public IActionResult DriverHistory(int? id)
+        public async Task<IActionResult> DriverHistory(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var driver = driversRepository.Details(id.Value);
+            var driver = await driversRepository.Details(id.Value);
             if (driver == null)
             {
                 return NotFound();
@@ -68,22 +66,20 @@ namespace CarManagement.Controllers
             ViewData["DriverLicenseNb"] = driver.LicenseNumber;
             ViewData["DriverId"] = driver.DriverId;
 
-            var history = vehicleDriverHistoryRepository.GetVehicleDriverHistoriesByDriverId(id.Value);
+            var history = await vehicleDriverHistoryRepository.GetVehicleDriverHistoriesByDriverId(id.Value);
 
             return View(history);  // Return the view with the driver's history
         }
 
-
-
         // GET: VehicleDriverHistories/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicleDriverHistory = vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
+            var vehicleDriverHistory = await vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
             if (vehicleDriverHistory == null)
             {
                 return NotFound();
@@ -133,26 +129,27 @@ namespace CarManagement.Controllers
         //}
 
         // GET: VehicleDriverHistories/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicleDriverHistory = vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
+            var vehicleDriverHistory = await vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
             if (vehicleDriverHistory == null)
             {
                 return NotFound();
             }
-            ViewData["DriverId"] = new SelectList(driversRepository.GetAllDrivers(), "DriverId", "Name", vehicleDriverHistory.DriverId);
+
+            ViewData["DriverId"] = new SelectList(await driversRepository.GetAllDrivers(), "DriverId", "Name", vehicleDriverHistory.DriverId);
             return View(vehicleDriverHistory);
         }
 
         // POST: VehicleDriverHistories/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, VehicleDriverHistory vehicleDriverHistory)
+        public async Task<IActionResult> Edit(int id, VehicleDriverHistory vehicleDriverHistory)
         {
             if (id != vehicleDriverHistory.VehicleDriverHistoryId)
             {
@@ -163,12 +160,11 @@ namespace CarManagement.Controllers
             {
                 try
                 {
-                    vehicleDriverHistoryRepository.EditVehicleDriverHistory(id, vehicleDriverHistory);
-
+                    await vehicleDriverHistoryRepository.EditVehicleDriverHistory(id, vehicleDriverHistory);
                 }
                 catch (Exception)
                 {
-                    var vehiclehistory = vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
+                    var vehiclehistory = await vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
                     if (vehiclehistory == null)
                     {
                         return NotFound();
@@ -179,21 +175,21 @@ namespace CarManagement.Controllers
                     }
                 }
                 return RedirectToAction(nameof(HistorybyvehicleId), new { id = vehicleDriverHistory.VehicleId });
-
             }
-            ViewData["DriverId"] = new SelectList(driversRepository.GetAllDrivers(), "DriverId", "Name", vehicleDriverHistory.DriverId);
+
+            ViewData["DriverId"] = new SelectList(await driversRepository.GetAllDrivers(), "DriverId", "Name", vehicleDriverHistory.DriverId);
             return View(vehicleDriverHistory);
         }
 
         // GET: VehicleDriverHistories/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicleDriverHistory = vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
+            var vehicleDriverHistory = await vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
             if (vehicleDriverHistory == null)
             {
                 return NotFound();
@@ -205,21 +201,18 @@ namespace CarManagement.Controllers
         // POST: VehicleDriverHistories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vehicleDriverHistory = vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
+            var vehicleDriverHistory = await vehicleDriverHistoryRepository.GetVehicleDriverHistoryDetails(id);
 
             if (vehicleDriverHistory.EndDate == null)
             {
                 ModelState.AddModelError(string.Empty, "You cannot delete this record because the driver is currently assigned. Please change the current driver before deleting.");
-
                 return View(vehicleDriverHistory);
             }
 
-            vehicleDriverHistoryRepository.DeleteVehicleDriverHistory(id);
-
+            await vehicleDriverHistoryRepository.DeleteVehicleDriverHistory(id);
             return RedirectToAction(nameof(HistorybyvehicleId), new { id = vehicleDriverHistory.VehicleId });
         }
-
     }
 }

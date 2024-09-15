@@ -13,41 +13,45 @@ namespace CarManagement.Models
         }
 
         // GET: Drivers
-        public IEnumerable<Driver> GetAllDrivers()
+        public async Task<IEnumerable<Driver>> GetAllDrivers()
         {
-            return _context.Drivers.ToList();
+            return await _context.Drivers.ToListAsync();
         }
 
         // GET: Drivers/Details/5
-        public Driver Details(int? id)
+        public async Task<Driver> Details(int? id)
         {
             if (id == null)
             {
                 return null;
             }
-            var driver = _context.Drivers.Find(id);
-            driver.CurrentVehicles = _context.Vehicles
-                .Where(v => v.CurrentDriverId == id)
-                .ToList(); ;
+
+            var driver = await _context.Drivers.FindAsync(id);
+            if (driver != null)
+            {
+                driver.CurrentVehicles = await _context.Vehicles
+                    .Where(v => v.CurrentDriverId == id)
+                    .ToListAsync();
+            }
             return driver;
         }
 
         // Create a new Driver
-        public void Create(Driver driver)
+        public async Task Create(Driver driver)
         {
+            if (driver == null)
+            {
+                throw new ArgumentNullException(nameof(driver));
+            }
+
             try
             {
-                if (driver == null)
-                {
-                    throw new ArgumentNullException(nameof(driver));
-                }
-
-                _context.Drivers.Add(driver);
-                _context.SaveChanges();
+                await _context.Drivers.AddAsync(driver);
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                // Handle duplicate PlateNumber during edit
+                // Handle duplicate License Number during edit
                 if (ex.InnerException?.Message.Contains("UNIQUE") == true)
                 {
                     throw new Exception("A Driver with the same Licence Number already exists.");
@@ -57,32 +61,31 @@ namespace CarManagement.Models
                     throw;
                 }
             }
-
         }
 
         // Edit an existing Driver
-        public void Edit(int id, Driver driver)
+        public async Task Edit(int id, Driver driver)
         {
+            if (driver == null)
+            {
+                throw new ArgumentNullException(nameof(driver));
+            }
+            if (id != driver.DriverId) return;
+
             try
             {
-                if (driver == null)
-                {
-                    throw new ArgumentNullException(nameof(driver));
-                }
-                if (id != driver.DriverId) return;
-
-                var existingDriver = _context.Drivers.Find(driver.DriverId);
+                var existingDriver = await _context.Drivers.FindAsync(driver.DriverId);
                 if (existingDriver == null)
                 {
                     throw new KeyNotFoundException($"Driver with ID {driver.DriverId} not found.");
                 }
 
                 _context.Entry(existingDriver).CurrentValues.SetValues(driver);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
-                // Handle duplicate PlateNumber during edit
+                // Handle duplicate License Number during edit
                 if (ex.InnerException?.Message.Contains("UNIQUE") == true)
                 {
                     throw new Exception("A Driver with the same Licence Number already exists.");
@@ -92,42 +95,44 @@ namespace CarManagement.Models
                     throw;
                 }
             }
-
         }
 
         // Delete a Driver
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            var driver = _context.Drivers.Find(id);
+            var driver = await _context.Drivers.FindAsync(id);
             if (driver == null)
             {
                 throw new KeyNotFoundException($"Driver with ID {id} not found.");
             }
 
             _context.Drivers.Remove(driver);
-            _context.SaveChanges();
-        }
-        public IEnumerable<Vehicle> GetAllCurrentVehicles()
-        {
-            return _context.Vehicles
-                .Where(v => v.CurrentDriverId != null)
-                .ToList();
+            await _context.SaveChangesAsync();
         }
 
-        public IEnumerable<Vehicle> GetCurrentVehiclesByDriverId(int driverId)
+        public async Task<IEnumerable<Vehicle>> GetAllCurrentVehicles()
         {
-            return _context.Vehicles
-                .Where(v => v.CurrentDriverId == driverId)
-                .ToList();
+            return await _context.Vehicles
+                .Where(v => v.CurrentDriverId != null)
+                .ToListAsync();
         }
-        public Driver GetDriverByLicenseNumber(string licenseNumber)
+
+        public async Task<IEnumerable<Vehicle>> GetCurrentVehiclesByDriverId(int driverId)
+        {
+            return await _context.Vehicles
+                .Where(v => v.CurrentDriverId == driverId)
+                .ToListAsync();
+        }
+
+        public async Task<Driver> GetDriverByLicenseNumber(string licenseNumber)
         {
             if (string.IsNullOrEmpty(licenseNumber))
             {
                 throw new ArgumentException("License number must be provided.", nameof(licenseNumber));
             }
 
-            var driver = _context.Drivers.FirstOrDefault(d => d.LicenseNumber == licenseNumber);
+            var driver = await _context.Drivers
+                .FirstOrDefaultAsync(d => d.LicenseNumber == licenseNumber);
 
             if (driver == null)
             {

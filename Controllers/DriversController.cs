@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CarManagement.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CarManagement.Controllers
 {
@@ -14,21 +15,21 @@ namespace CarManagement.Controllers
         }
 
         // GET: Drivers
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Driver> drivers = _repository.GetAllDrivers();
+            IEnumerable<Driver> drivers = await _repository.GetAllDrivers();
             return View(drivers);
         }
 
         // GET: Drivers/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var driver = _repository.Details(id);
+            var driver = await _repository.Details(id);
             if (driver == null)
             {
                 return NotFound();
@@ -46,13 +47,13 @@ namespace CarManagement.Controllers
         // POST: Drivers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Driver driver)
+        public async Task<IActionResult> Create(Driver driver)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _repository.Create(driver);
+                    await _repository.Create(driver);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -64,29 +65,27 @@ namespace CarManagement.Controllers
             return View(driver);
         }
 
-        public IActionResult Edit(int id)
+        // GET: Drivers/Edit/5
+        public async Task<IActionResult> Edit(int id)
         {
-
             if (id == null)
             {
                 return NotFound();
             }
 
-            var driver = _repository.Details(id);
+            var driver = await _repository.Details(id);
             if (driver == null)
             {
                 return NotFound();
             }
 
             return View(driver);
-
         }
-
 
         // POST: Drivers/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Driver driver)
+        public async Task<IActionResult> Edit(int id, Driver driver)
         {
             if (id != driver.DriverId)
             {
@@ -96,7 +95,7 @@ namespace CarManagement.Controllers
             {
                 try
                 {
-                    _repository.Edit(id, driver);
+                    await _repository.Edit(id, driver);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -109,14 +108,14 @@ namespace CarManagement.Controllers
         }
 
         // GET: Drivers/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var driver = _repository.Details(id);
+            var driver = await _repository.Details(id);
             if (driver == null)
             {
                 return NotFound();
@@ -128,11 +127,11 @@ namespace CarManagement.Controllers
         // POST: Drivers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                _repository.Delete(id);
+                await _repository.Delete(id);
             }
             catch (KeyNotFoundException)
             {

@@ -2,6 +2,8 @@
 using CarManagement.Data;
 using CarManagement.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CarManagement.Controllers
 {
@@ -10,7 +12,6 @@ namespace CarManagement.Controllers
         private readonly VehicleRepository vehicleRepository;
         private readonly DriversRepository driversRepository;
 
-
         public VehiclesController(VehicleRepository vehicleRepository, DriversRepository driversRepository)
         {
             this.vehicleRepository = vehicleRepository;
@@ -18,21 +19,21 @@ namespace CarManagement.Controllers
         }
 
         // GET: Vehicles
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var vehicles = vehicleRepository.GetallVehicles();
+            var vehicles = await vehicleRepository.GetallVehicles();
             return View(vehicles);
         }
 
         // GET: Vehicles/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicle = vehicleRepository.Details(id);
+            var vehicle = await vehicleRepository.Details(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -50,13 +51,13 @@ namespace CarManagement.Controllers
         // POST: Vehicles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Vehicle vehicle)
+        public async Task<IActionResult> Create(Vehicle vehicle)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    vehicleRepository.Create(vehicle);
+                    await vehicleRepository.Create(vehicle);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -69,14 +70,14 @@ namespace CarManagement.Controllers
         }
 
         // GET: Vehicles/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicle = vehicleRepository.Details(id);
+            var vehicle = await vehicleRepository.Details(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -87,7 +88,7 @@ namespace CarManagement.Controllers
         // POST: Vehicles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Vehicle vehicle)
+        public async Task<IActionResult> Edit(int id, Vehicle vehicle)
         {
             if (id != vehicle.VehicleId)
             {
@@ -98,7 +99,7 @@ namespace CarManagement.Controllers
             {
                 try
                 {
-                    vehicleRepository.Edit(id, vehicle);
+                    await vehicleRepository.Edit(id, vehicle);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -111,14 +112,14 @@ namespace CarManagement.Controllers
         }
 
         // GET: Vehicles/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicle = vehicleRepository.Details(id);
+            var vehicle = await vehicleRepository.Details(id);
             if (vehicle == null)
             {
                 return NotFound();
@@ -129,27 +130,27 @@ namespace CarManagement.Controllers
         // POST: Vehicles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            vehicleRepository.Delete(id);
+            await vehicleRepository.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Vehicles/EditDriver/5
-        public IActionResult EditDriver(int? id)
+        public async Task<IActionResult> EditDriver(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var vehicle = vehicleRepository.Details(id);
+            var vehicle = await vehicleRepository.Details(id);
             if (vehicle == null)
             {
                 return NotFound();
             }
 
-            var drivers = driversRepository.GetAllDrivers();
+            var drivers = await driversRepository.GetAllDrivers();
 
             var viewModel = new EditDriverViewModel
             {
@@ -163,24 +164,21 @@ namespace CarManagement.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult EditDriver(EditDriverViewModel model)
+        public async Task<IActionResult> EditDriver(EditDriverViewModel model)
         {
             try
             {
-                vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
+                await vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
                 return Redirect($"/VehicleDriverHistories/HistorybyvehicleId/{model.VehicleId}");
-
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, "An error occurred while updating the driver.");
             }
-            var drivers = driversRepository.GetAllDrivers();
+
+            var drivers = await driversRepository.GetAllDrivers();
             model.Drivers = new SelectList(drivers, "DriverId", "LicenseNumber");
             return View(model);
         }
-
-
-
     }
 }
