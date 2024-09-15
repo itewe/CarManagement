@@ -123,6 +123,8 @@ namespace CarManagement.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Email = Input.Email,
+                    UserName = Input.Email
+
 
                 };
 

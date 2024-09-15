@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Authorization
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IAuthorizationService AuthorizationService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -37,6 +43,12 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Maintenances" asp-action="Index">Maintenances</a>
                         </li>
 
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("WebAdmin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial">
                 </div>
