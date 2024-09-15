@@ -4,9 +4,11 @@ using CarManagement.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarManagement.Controllers
 {
+    [Authorize]
     public class VehiclesController : Controller
     {
         private readonly VehicleRepository vehicleRepository;

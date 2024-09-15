@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CarManagement.Models;
 using CarManagement.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarManagement.Controllers
 {
+    [Authorize]
     public class VehicleDriverHistoriesController : Controller
     {
         private readonly VehicleDriverHistoryRepository vehicleDriverHistoryRepository;

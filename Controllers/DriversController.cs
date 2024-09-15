@@ -2,9 +2,11 @@
 using CarManagement.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarManagement.Controllers
 {
+    [Authorize]
     public class DriversController : Controller
     {
         private readonly DriversRepository _repository;

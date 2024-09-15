@@ -1,6 +1,7 @@
 ﻿using CarManagement.Models;
 using CarManagement.Repositories;
 using CarManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace CarManagement.Controllers
 {
+    [Authorize]
     public class MaintenancesController : Controller
     {
         private readonly MaintenanceRepository _maintenanceRepository;

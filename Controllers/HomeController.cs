@@ -1,6 +1,7 @@
 using CarManagement.Models;
 using CarManagement.Repositories; // Add this if not already included
 using CarManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
