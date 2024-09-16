@@ -38,14 +38,6 @@ namespace CarManagement.Data
                 .HasForeignKey(v => v.CurrentDriverId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            var adminRoleId = "admin-role-id";
-            var admin = new IdentityRole
-            {
-                Id = adminRoleId,
-                Name = "admin",
-                NormalizedName = "ADMIN"
-            };
-            modelBuilder.Entity<IdentityRole>().HasData(admin);
 
 
         }

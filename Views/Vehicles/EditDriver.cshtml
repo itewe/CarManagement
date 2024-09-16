@@ -4,10 +4,19 @@
     ViewData["Title"] = "Edit Driver";
 }
 
-<h1>Edit Driver</h1>
+<h1>Edit Driver for car plate number: @ViewData["Platenb"]</h1>
 
-<form asp-action="EditDriver" method="post" id="editDriverForm">
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
+<form id="editDriverForm" method="post">
     <input type="hidden" asp-for="VehicleId" />
 
     <div class="form-group">
@@ -21,7 +30,30 @@
     <br />
 
     <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
+        <input type="button" value="Save" id="saveButton" class="btn btn-primary" />
         <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.VehicleId">Return To Edit</a>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        document.getElementById("saveButton").addEventListener("click", function () {
+            var plateNumber = "@ViewData["Platenb"]";
+
+            Swal.fire({
+                title: 'Are you sure you want to change the current vehicle driver?',
+                text: "Car plate number: " + plateNumber,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("editDriverForm").submit();
+                }
+            });
+        });
+    </script>
+}

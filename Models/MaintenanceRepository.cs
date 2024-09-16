@@ -20,7 +20,7 @@ namespace CarManagement.Repositories
         // Get all maintenance records
         public async Task<IEnumerable<Maintenance>> GetAllMaintenances()
         {
-            return await _context.Maintenances.Include(m => m.Vehicle).ToListAsync();
+            return await _context.Maintenances.Include(m => m.Vehicle).OrderByDescending(m => m.DateOfMaintenance).ToListAsync();
         }
 
         // Get all maintenance records by VehicleId

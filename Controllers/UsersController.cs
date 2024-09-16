@@ -25,7 +25,6 @@ namespace CarManagement.Controllers
         }
 
         // GET: Users/Details/5
-        // GET: Users/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -56,18 +55,48 @@ namespace CarManagement.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Check if email already exists
+                var existingUser = await _userManager.FindByEmailAsync(user.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with this email already exists.");
+                    return View(user);
+                }
+
+                // Check password constraints
+                if (!IsValidPassword(password))
+                {
+                    ModelState.AddModelError(string.Empty, "Password must contain at least one lowercase letter, one uppercase letter, one symbol, and one number.");
+                    return View(user);
+                }
+
                 user.UserName = user.Email;
+                user.EmailConfirmed = true; // Set email as confirmed
+
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
                     return RedirectToAction(nameof(Index));
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View(user);
+        }
+
+
+        // Helper method to validate password
+        private bool IsValidPassword(string password)
+        {
+            bool hasUpperCase = password.Any(c => char.IsUpper(c));
+            bool hasLowerCase = password.Any(c => char.IsLower(c));
+            bool hasSymbol = password.Any(c => char.IsSymbol(c) || char.IsPunctuation(c));
+            bool hasDigit = password.Any(c => char.IsDigit(c));
+
+            return hasUpperCase && hasLowerCase && hasSymbol && hasDigit;
         }
 
 
@@ -83,7 +112,6 @@ namespace CarManagement.Controllers
         }
 
         // POST: Users/Edit/5
-        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, ApplicationUser user)
@@ -97,20 +125,17 @@ namespace CarManagement.Controllers
             {
                 try
                 {
-                    // Retrieve the user from the database
                     var existingUser = await _userManager.FindByIdAsync(id);
                     if (existingUser == null)
                     {
                         return NotFound();
                     }
 
-                    // Update the properties of the existing user
                     existingUser.FirstName = user.FirstName;
                     existingUser.LastName = user.LastName;
                     existingUser.Email = user.Email;
                     existingUser.UserName = user.UserName;
 
-                    // Update the user in the database
                     var result = await _userManager.UpdateAsync(existingUser);
                     if (result.Succeeded)
                     {
@@ -156,7 +181,6 @@ namespace CarManagement.Controllers
             return View(user);
         }
 
-        // POST: Users/Delete/5
         // POST: Users/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

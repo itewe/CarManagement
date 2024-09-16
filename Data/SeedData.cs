@@ -6,6 +6,7 @@ namespace CarManagement.Data
 {
     public static class SeedData
     {
+        //SIMPLE ROLE BASED AUTHENTICATION making an WebAdmin Role and User Role
         public static async Task Initialize(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             // Seed roles

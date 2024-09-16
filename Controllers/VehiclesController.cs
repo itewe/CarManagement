@@ -154,6 +154,8 @@ namespace CarManagement.Controllers
 
             var drivers = await driversRepository.GetAllDrivers();
 
+            ViewData["Platenb"] = vehicle.PlateNumber;
+
             var viewModel = new EditDriverViewModel
             {
                 VehicleId = vehicle.VehicleId,
@@ -168,19 +170,40 @@ namespace CarManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditDriver(EditDriverViewModel model)
         {
-            try
+
+
+            var vehicle = await vehicleRepository.Details(model.VehicleId);
+            if (vehicle == null)
             {
-                await vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
-                return Redirect($"/VehicleDriverHistories/HistorybyvehicleId/{model.VehicleId}");
+                return NotFound();
             }
-            catch (Exception ex)
+            if (model.SelectedDriverId != vehicle.CurrentDriverId)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while updating the driver.");
+
+
+                try
+                {
+                    await vehicleRepository.UpdateDriver(model.VehicleId, model.SelectedDriverId);
+                    return Redirect($"/VehicleDriverHistories/HistorybyvehicleId/{model.VehicleId}");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, "An error occurred while updating the driver.");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "The selected driver is already the current driver.");
             }
 
+
+            ViewData["Platenb"] = vehicle.PlateNumber;
+
             var drivers = await driversRepository.GetAllDrivers();
+
             model.Drivers = new SelectList(drivers, "DriverId", "LicenseNumber");
             return View(model);
         }
+
     }
 }
