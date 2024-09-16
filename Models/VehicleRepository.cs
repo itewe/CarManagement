@@ -1,6 +1,10 @@
 ﻿using CarManagement.Data;
 using CarManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CarManagement.Models
 {
@@ -16,35 +20,33 @@ namespace CarManagement.Models
         }
 
         // GET: Vehicles
-        public IEnumerable<Vehicle> GetallVehicles()
+        public async Task<IEnumerable<Vehicle>> GetallVehicles()
         {
-            return _context.Vehicles
-                               .Include(v => v.CurrentDriver)
-                               .ToList();
+            return await _context.Vehicles
+                .Include(v => v.CurrentDriver)
+                .ToListAsync();
         }
 
         // GET: Vehicles/Details/5
-        public Vehicle Details(int? id)
+        public async Task<Vehicle> Details(int? id)
         {
             if (id == null)
             {
                 return null;
             }
 
-            var vehicle = _context.Vehicles
-                          .Include(v => v.CurrentDriver)
-                          .FirstOrDefault(v => v.VehicleId == id);
-
-            return vehicle;
+            return await _context.Vehicles
+                .Include(v => v.CurrentDriver)
+                .FirstOrDefaultAsync(v => v.VehicleId == id);
         }
 
         // Create a new Vehicle
-        public void Create(Vehicle vehicle)
+        public async Task Create(Vehicle vehicle)
         {
             try
             {
                 _context.Vehicles.Add(vehicle);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException ex)
             {
@@ -60,20 +62,19 @@ namespace CarManagement.Models
         }
 
         // Edit an existing Vehicle
-        public void Edit(int id, Vehicle vehicle)
+        public async Task Edit(int id, Vehicle vehicle)
         {
             try
             {
-                var existingVehicle = _context.Vehicles.Find(id);
+                var existingVehicle = await _context.Vehicles.FindAsync(id);
                 if (existingVehicle != null)
                 {
                     existingVehicle.NumberOfSeats = vehicle.NumberOfSeats;
                     existingVehicle.PlateNumber = vehicle.PlateNumber;
-
                     existingVehicle.Color = vehicle.Color;
                     existingVehicle.Type = vehicle.Type;
 
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
             }
             catch (DbUpdateException ex)
@@ -89,35 +90,38 @@ namespace CarManagement.Models
             }
         }
 
-        public void Delete(int id)
+        // Delete a vehicle
+        public async Task Delete(int id)
         {
-            var vehicle = _context.Vehicles.Find(id);
+            var vehicle = await _context.Vehicles.FindAsync(id);
             if (vehicle == null)
             {
                 throw new KeyNotFoundException($"Vehicle with ID {id} not found.");
             }
 
             _context.Vehicles.Remove(vehicle);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void UpdateDriver(int vehicleId, int driverId)
+
+        // Update driver for a vehicle
+        public async Task UpdateDriver(int vehicleId, int driverId)
         {
             // Find the vehicle
-            var vehicle = _context.Vehicles.Find(vehicleId);
+            var vehicle = await _context.Vehicles.FindAsync(vehicleId);
             if (vehicle == null)
             {
                 throw new KeyNotFoundException($"Vehicle with ID {vehicleId} not found.");
             }
 
             // Find the last vehicle-driver history for this vehicle where EndDate is null
-            var lastHistory = _historyRepository.GetVehicleDriverHistoriesByVehicleId(vehicleId)
-                                                 .FirstOrDefault(vdh => vdh.EndDate == null);
+            var lastHistory = (await _historyRepository.GetVehicleDriverHistoriesByVehicleId(vehicleId))
+                .FirstOrDefault(vdh => vdh.EndDate == null);
 
             // If a history entry is found with null EndDate, set its EndDate to the current date and time
             if (lastHistory != null)
             {
                 lastHistory.EndDate = DateTime.Now;
-                _historyRepository.EditVehicleDriverHistory(lastHistory.VehicleDriverHistoryId, lastHistory);
+                await _historyRepository.EditVehicleDriverHistory(lastHistory.VehicleDriverHistoryId, lastHistory);
             }
 
             // Handle case where driverId is set to 0, indicating no current driver
@@ -125,12 +129,12 @@ namespace CarManagement.Models
             {
                 vehicle.CurrentDriverId = null;
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return;
             }
 
             // Find the driver
-            var driver = _context.Drivers.Find(driverId);
+            var driver = await _context.Drivers.FindAsync(driverId);
             if (driver == null)
             {
                 throw new KeyNotFoundException($"Driver with ID {driverId} not found.");
@@ -138,8 +142,6 @@ namespace CarManagement.Models
 
             // Set the new current driver
             vehicle.CurrentDriverId = driverId;
-
-
 
             // Create a new vehicle-driver history for the new driver
             var newHistory = new VehicleDriverHistory
@@ -151,12 +153,10 @@ namespace CarManagement.Models
             };
 
             // Add the new history entry
-            _historyRepository.CreateVehicleDriverHistory(newHistory);
+            await _historyRepository.CreateVehicleDriverHistory(newHistory);
 
             // Save the vehicle changes (assign new driver)
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-
     }
 }
-

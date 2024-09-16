@@ -1,62 +1,66 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using CarManagement.Data;
 using CarManagement.Models;
+using Microsoft.AspNetCore.Identity;
 using CarManagement.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Repositories
 builder.Services.AddScoped<VehicleRepository>();
 builder.Services.AddScoped<DriversRepository>();
 builder.Services.AddScoped<MaintenanceRepository>();
 builder.Services.AddScoped<VehicleDriverHistoryRepository>();
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-
-
+// MySQL connection
 var connectionString = builder.Configuration.GetConnectionString("MySqlConn");
 builder.Services.AddDbContext<CarManagementContext>(options =>
 {
-    //connection string from appsettings.json and fed to CarManagementContext => tools
-    //package manager terminal manage migration: Add-migration Init
-    //Update-Database Init
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-var app = builder.Build();
-//check if connection succ
-//using (MySqlConnection conn = new MySqlConnection(connectionString))
-//{
-//    try
-//    {
-//        conn.Open();
-//        Console.WriteLine("Connection successful!!!");
-//    }
-//    catch (Exception ex)
-//    {
-//        Console.WriteLine($"Connection failed: {ex.Message}");
-//    }
-//}
-// Configure the HTTP request pipeline.
 
+// Identity services
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>() // Add Roles for seeding
+    .AddEntityFrameworkStores<CarManagementContext>()
+    .AddDefaultUI(); // Identity UI
 
-
-
-if (!app.Environment.IsDevelopment())
+// Authorization policy for WebAdmin role
+builder.Services.AddAuthorization(options =>
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+    options.AddPolicy("WebAdminPolicy", policy => policy.RequireRole("WebAdmin"));
+});
 
+var app = builder.Build();
+
+// Ensure the Authentication Middleware is used
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
+app.UseAuthentication(); // Ensure this is before authorization
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages(); // Ensure Razor Pages are mapped for Identity UI
+
+// Seed database (create roles and admin user)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await SeedData.Initialize(userManager, roleManager); // Call the SeedData.Initialize method
+}
 
 app.Run();

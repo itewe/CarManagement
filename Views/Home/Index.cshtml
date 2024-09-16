@@ -1,7 +1,117 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model CarManagement.Models.DashboardViewModel
+
+@{
+    var userName = User.Identity.IsAuthenticated ? User.Identity.Name : null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to the car management system</h1>
+<div class="container mt-4">
+    <!-- Greeting -->
+    <h1>
+        @if (userName != null)
+        {
+            @($"Hello, {userName}!")
+        }
+        else
+        {
+            @("Welcome to the Dashboard!")
+        }
+    </h1>
+
+    <!-- Dashboard Cards -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Total Vehicles</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.TotalCars</h5>
+                    <a href="@Url.Action("Index", "Vehicles")" class="btn btn-light">View Vehicles</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Total Drivers</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.TotalDrivers</h5>
+                    <a href="@Url.Action("Index", "Drivers")" class="btn btn-light">View Drivers</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Total Maintenances</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.TotalMaintenances</h5>
+                    <a href="@Url.Action("Index", "Maintenances")" class="btn btn-light">View Maintenances</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Active Vehicles</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.ActiveVehicles</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Inactive Vehicles</div>
+                <div class="card-body">
+                    <h5 class="card-title">@Model.InactiveVehicles</h5>
+                </div>
+            </div>
+        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-header">Total Maintenance Cost</div>
+                    <div class="card-body">
+                        <h5 class="card-title">$@Model.TotalMaintenanceCost</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Last 5 Maintenances Table -->
+        <div class="card mt-4">
+            <div class="card-header">Last 5 Maintenances</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Vehicle</th>
+                            <th>Cost</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.LastFiveMaintenances.Count() && i < 5; i++)
+                        {
+                            var maintenance = Model.LastFiveMaintenances.ElementAt(i);
+                            <tr>
+                                <td>@maintenance.DateOfMaintenance.ToShortDateString()</td>
+                                <td>@maintenance.Vehicle?.PlateNumber</td>
+                                <td>$@maintenance.Cost</td>
+                                <td>@maintenance.Description</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <a class=" btn btn-link" id="login" asp-area="Identity" asp-page="/Account/Login">Login To see More info</a>
+
+    }
 </div>
+
+
+

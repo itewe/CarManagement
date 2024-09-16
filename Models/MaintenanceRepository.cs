@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CarManagement.Repositories
 {
@@ -16,69 +17,71 @@ namespace CarManagement.Repositories
             _context = context;
         }
 
-        //Get all maintenance records
-        public IEnumerable<Maintenance> GetAllMaintenances()
+        // Get all maintenance records
+        public async Task<IEnumerable<Maintenance>> GetAllMaintenances()
         {
-            return _context.Maintenances.Include(m => m.Vehicle).ToList();
+            return await _context.Maintenances.Include(m => m.Vehicle).OrderByDescending(m => m.DateOfMaintenance).ToListAsync();
         }
 
-        public IEnumerable<Maintenance> GetAllMaintenancesByVehicleId(int id)
+        // Get all maintenance records by VehicleId
+        public async Task<IEnumerable<Maintenance>> GetAllMaintenancesByVehicleId(int id)
         {
-            return _context.Maintenances
+            return await _context.Maintenances
                .Where(m => m.VehicleId == id)
                .Include(m => m.Vehicle)
                .OrderByDescending(m => m.DateOfMaintenance)
-               .ToList();
+               .ToListAsync();
         }
 
-
         // Get details of a specific maintenance record by ID
-        public Maintenance GetMaintenanceDetails(int? id)
+        public async Task<Maintenance> GetMaintenanceDetails(int? id)
         {
             if (id == null)
             {
                 return null;
             }
 
-            var maintenance = _context.Maintenances
+            return await _context.Maintenances
                 .Include(m => m.Vehicle)
-                .FirstOrDefault(m => m.MaintenanceId == id);
-
-            return maintenance;
+                .FirstOrDefaultAsync(m => m.MaintenanceId == id);
         }
 
         // Create a new maintenance record
-        public void CreateMaintenance(Maintenance maintenance)
+        public async Task CreateMaintenance(Maintenance maintenance)
         {
+            if (maintenance == null)
+            {
+                throw new ArgumentNullException(nameof(maintenance));
+            }
 
             _context.Maintenances.Add(maintenance);
-            _context.SaveChanges();
-
+            await _context.SaveChangesAsync();
         }
 
         // Update an existing maintenance record
-        public void EditMaintenance(int id, Maintenance maintenance)
+        public async Task EditMaintenance(int id, Maintenance maintenance)
         {
+            if (maintenance == null)
+            {
+                throw new ArgumentNullException(nameof(maintenance));
+            }
 
-            var existingMaintenance = _context.Maintenances.Find(id);
+            var existingMaintenance = await _context.Maintenances.FindAsync(id);
             if (existingMaintenance != null)
             {
                 _context.Entry(existingMaintenance).CurrentValues.SetValues(maintenance);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
-
-
         }
 
         // Delete a maintenance record
-        public void DeleteMaintenance(int id)
+        public async Task DeleteMaintenance(int id)
         {
-
-            var maintenance = _context.Maintenances.Find(id);
+            var maintenance = await _context.Maintenances.FindAsync(id);
             if (maintenance != null)
             {
                 _context.Maintenances.Remove(maintenance);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

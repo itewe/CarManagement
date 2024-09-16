@@ -6,11 +6,12 @@
 
 <h1>Edit</h1>
 
-<h4>Driver</h4>
+<h4>Driver <input type="hidden" id="licnb" value=" @Model.LicenseNumber" /></h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form id="editForm" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="DriverId" />
             <div class="form-group">
@@ -20,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="LicenseNumber" class="control-label"></label>
-                <input asp-for="LicenseNumber" class="form-control" />
+                <input asp-for="LicenseNumber" id="licenseNumber" class="form-control" />
                 <span asp-validation-for="LicenseNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -31,7 +32,7 @@
             <div class="form-group">
                 <br />
                 <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-success" />
+                    <input type="button" id="saveButton" value="Save" class="btn btn-success" />
                     <a asp-action="Index" class="btn btn-primary">Back to List</a>
                 </div>
             </div>
@@ -39,10 +40,29 @@
     </div>
 </div>
 
-<div>
-</div>
-
 @section Scripts {
+
+
+    <script>
+        document.getElementById("saveButton").addEventListener("click", function () {
+            // Get the LicenseNumber value
+            var licenseNumber = document.getElementById("licnb").value;
+            Swal.fire({
+                title: 'Are you sure you want to edit this driver?',
+                text: "License Number: " + licenseNumber,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("editForm").submit();
+                }
+            });
+        });
+
+    </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
